@@ -151,7 +151,6 @@ static __global__ void unary_op_kernel_strided(const T * x, T * dst, const int k
     const T * src_ptr = (const T *)((const char *)x + src_byte_offset);
 
     ggml_cuda_pdl_sync();
-    
     dst[i] = (T)op((float)(*src_ptr));
 }
 
@@ -176,10 +175,10 @@ void ggml_cuda_op_unary(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     GGML_ASSERT(src0->type == dst->type);
 
     if (ggml_is_contiguous(src0)) {
-        if (src0->type == GGML_TYPE_F16) { unary_cuda<op>((const half *)src0_d, (half *)dst_d, ggml_nelements(src0), stream); } 
+        if (src0->type == GGML_TYPE_F16) { unary_cuda<op>((const half *)src0_d, (half *)dst_d, ggml_nelements(src0), stream); }
         else { unary_cuda<op>((const float *)src0_d, (float *)dst_d, ggml_nelements(src0), stream);  }
     } else {
-        if (src0->type == GGML_TYPE_F16) { unary_cuda_strided<op>((const half *)src0_d, (half *)dst_d, ggml_nelements(src0),src0->ne[0],src0->ne[1],src0->ne[2],src0->nb[0],src0->nb[1],src0->nb[2],src0->nb[3], stream); } 
+        if (src0->type == GGML_TYPE_F16) { unary_cuda_strided<op>((const half *)src0_d, (half *)dst_d, ggml_nelements(src0),src0->ne[0],src0->ne[1],src0->ne[2],src0->nb[0],src0->nb[1],src0->nb[2],src0->nb[3], stream); }
         else { unary_cuda_strided<op>((const float *)src0_d, (float *)dst_d, ggml_nelements(src0),src0->ne[0],src0->ne[1],src0->ne[2],src0->nb[0],src0->nb[1],src0->nb[2],src0->nb[3], stream);  }
         }
 
